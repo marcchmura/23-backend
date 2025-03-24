@@ -2,7 +2,7 @@ fastapi
 pydantic
 numpy
 torch
-open_clip
+open_clip_torch
 faiss
 os
 starlette
