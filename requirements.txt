@@ -1,6 +1,8 @@
-torch
-open_clip_torch
-faiss-cpu
-Pillow
+fastapi
+pydantic
 numpy
-streamlit
+torch
+open_clip
+faiss
+os
+starlette

@@ -1,17 +1,12 @@
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
 import torch
 import open_clip
 import faiss
-from PIL import Image
-import io
-import base64
 import os
-from fastapi.staticfiles import StaticFiles
 from fastapi import Query
-from starlette.responses import Response
 from starlette.middleware.base import BaseHTTPMiddleware
 
 
