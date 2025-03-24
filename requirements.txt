@@ -3,6 +3,5 @@ pydantic
 numpy
 torch
 open_clip_torch
-faiss
+faiss-cpu
 os
-starlette
