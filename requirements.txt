@@ -4,4 +4,3 @@ numpy
 torch
 open_clip_torch
 faiss-cpu
-os
