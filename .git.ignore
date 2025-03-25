@@ -1,1 +1,2 @@
-ssh -i "second.pem" ec2-user@ec2-13-211-45-95.ap-southeast-2.compute.amazonaws.com
+second.pem
+.env
