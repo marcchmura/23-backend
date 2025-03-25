@@ -1,3 +1,7 @@
 fastapi
-
+pydantic
+numpy
+torch
+open_clip_torch
+faiss-cpu
 uvicorn
