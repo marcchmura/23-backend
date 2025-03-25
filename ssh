@@ -1,7 +1,8 @@
-ssh -i "second.pem" ec2-user@ec2-3-107-199-159.ap-southeast-2.compute.amazonaws.com
+chmod 400 "second.pem"
+ssh -i "second.pem" ec2-user@ec2-54-252-158-207.ap-southeast-2.compute.amazonaws.com
 sudo yum install git -y
 git clone https://github.com/marcchmura/23-backend.git
 cd 23-backend
 sudo yum install python3-pip -y
 pip3 install -r requirements.txt
-uvicorn main:app
+uvicorn api.main:app
