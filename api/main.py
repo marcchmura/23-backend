@@ -2,9 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import numpy as np
-import torch
-import open_clip
-import faiss
+
 import os
 from fastapi import Query
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -34,6 +32,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import open_clip
+import faiss
+
 # Load model, index, and paths
 model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
 model.eval()
@@ -49,6 +50,12 @@ class TextQuery(BaseModel):
     query: str
     
 S3_BASE_URL = "https://pub-1572fd5f6cef49e9bd8dcad74763c24b.r2.dev/"
+
+@app.get("/")
+def read_root():
+    return {"message": "Good"}
+
+import torch
 
 @app.post("/search_text")
 def search_text(body: TextQuery, offset: int = Query(0), limit: int = Query(100)):
