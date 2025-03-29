@@ -6,4 +6,4 @@ cd 23-backend
 sudo yum install python3-pip -y
 pip3 install -r requirements.txt
 uvicorn api.main:app
-uvicorn main:app --host 0.0.0.0 --port 8000
+uvicorn api.main:app --host 0.0.0.0 --port 8000
