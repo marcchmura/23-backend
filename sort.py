@@ -7,7 +7,7 @@ import open_clip
 
 IMAGE_FOLDER = "training"
 EMBEDDING_FILE = "embeddings/vectors.npy"
-PATHS_FILE = "embeddings/paths.txt"  # plain text paths only
+PATHS_FILE = "embeddings/paths.txt"
 
 def load_model():
     model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
@@ -40,7 +40,7 @@ def vectorize_all_media():
     embeddings = []
     paths = []
 
-    # Step 1: Vectorize existing image files in folder
+    # Vectorize images
     for fname in os.listdir(IMAGE_FOLDER):
         if fname.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
             path = os.path.join(IMAGE_FOLDER, fname)
@@ -49,23 +49,24 @@ def vectorize_all_media():
             embeddings.append(emb.numpy())
             paths.append(path)
 
-    # Step 2: Extract middle frame from each video and treat as image
+    # Extract and vectorize video thumbnails
     for fname in os.listdir(IMAGE_FOLDER):
         if fname.lower().endswith(('.mp4', '.mov', '.webm')):
             video_path = os.path.join(IMAGE_FOLDER, fname)
-            frame_filename = os.path.splitext(fname)[0] + ".jpg"
+            base_name = os.path.splitext(fname)[0]
+            frame_filename = f"video_{base_name}.jpg"
             frame_path = os.path.join(IMAGE_FOLDER, frame_filename)
 
-            if os.path.exists(frame_path):  # skip if already exists
+            if os.path.exists(frame_path):
                 continue
 
-            print(f"🎥 Extracting frame from: {video_path}")
+            print(f"🎥 Extracting middle frame from: {video_path}")
             if extract_middle_frame(video_path, frame_path):
                 emb = get_image_embedding(model, preprocess, frame_path)
                 embeddings.append(emb.numpy())
                 paths.append(frame_path)
 
-    # Save all to disk
+    # Save to disk
     os.makedirs("embeddings", exist_ok=True)
     np.save(EMBEDDING_FILE, np.stack(embeddings))
 
@@ -73,7 +74,7 @@ def vectorize_all_media():
         for p in paths:
             f.write(p + "\n")
 
-    print(f"✅ Vectorized {len(embeddings)} files (images + video frames)")
+    print(f"✅ Vectorized {len(embeddings)} files")
 
 if __name__ == "__main__":
     vectorize_all_media()
