@@ -1,16 +1,15 @@
 import os
-import json
 import numpy as np
 import torch
+import cv2
 from PIL import Image
 import open_clip
-import cv2
 
 IMAGE_FOLDER = "training"
 VIDEO_FOLDER = "training"
 FRAME_FOLDER = "video_frames"
 EMBEDDING_FILE = "embeddings/vectors.npy"
-PATHS_FILE = "embeddings/paths.jsonl"  # Changed to JSON lines for richer metadata
+PATHS_FILE = "embeddings/paths.txt"  # ✅ back to plain .txt
 
 def load_model():
     model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
@@ -42,44 +41,37 @@ def extract_middle_frame(video_path, output_path):
 def vectorize_all_media():
     model, preprocess = load_model()
     embeddings = []
-    metadata = []
+    paths = []
 
-    # Process images
+    # Vectorize images
     for fname in os.listdir(IMAGE_FOLDER):
         if fname.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
             path = os.path.join(IMAGE_FOLDER, fname)
             print(f"🖼️ Vectorizing image: {path}")
             emb = get_image_embedding(model, preprocess, path)
             embeddings.append(emb.numpy())
-            metadata.append({
-                "type": "image",
-                "url": f"/images/{fname}"
-            })
+            paths.append(path)
 
-    # Process videos
+    # Vectorize videos via frame
     for fname in os.listdir(VIDEO_FOLDER):
         if fname.lower().endswith(('.mp4', '.mov', '.webm')):
             video_path = os.path.join(VIDEO_FOLDER, fname)
             frame_path = os.path.join(FRAME_FOLDER, f"{os.path.splitext(fname)[0]}.jpg")
 
-            print(f"🎥 Extracting middle frame from video: {video_path}")
+            print(f"🎥 Extracting middle frame: {video_path}")
             if extract_middle_frame(video_path, frame_path):
                 emb = get_image_embedding(model, preprocess, frame_path)
                 embeddings.append(emb.numpy())
-                metadata.append({
-                    "type": "video",
-                    "url": f"/frames/{os.path.basename(frame_path)}",
-                    "video": f"/videos/{fname}"
-                })
+                paths.append(frame_path)  # ✅ add the frame only
 
-    # Save outputs
     os.makedirs("embeddings", exist_ok=True)
     np.save(EMBEDDING_FILE, np.stack(embeddings))
-    with open(PATHS_FILE, "w") as f:
-        for entry in metadata:
-            f.write(json.dumps(entry) + "\n")
 
-    print(f"✅ Saved {len(embeddings)} embeddings (images + videos)!")
+    with open(PATHS_FILE, "w") as f:
+        for p in paths:
+            f.write(p + "\n")
+
+    print(f"✅ Saved {len(embeddings)} embeddings to vectors.npy and paths.txt")
 
 if __name__ == "__main__":
     vectorize_all_media()
