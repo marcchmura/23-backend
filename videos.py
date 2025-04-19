@@ -2,7 +2,7 @@ import os
 import cv2
 
 VIDEO_FOLDER = "videos"
-OUTPUT_FOLDER = "training"
+OUTPUT_FOLDER = "downloaded_images"
 
 def extract_middle_frame(video_path, output_path):
     cap = cv2.VideoCapture(video_path)

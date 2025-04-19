@@ -8,8 +8,8 @@ import open_clip
 from torchvision import transforms
 
 IMAGE_FOLDER = "downloaded_images"
-EMBEDDING_FILE = "embeddings/vectors.npy"
-PATHS_FILE = "embeddings/paths.txt"
+EMBEDDING_FILE = "embeddings/new_vectors.npy"
+PATHS_FILE = "embeddings/new_paths.txt"
 
 def load_model():
     model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
