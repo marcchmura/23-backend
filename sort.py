@@ -1,9 +1,11 @@
+# main.py
+
 import os
 import numpy as np
-import torch
-import cv2
 from PIL import Image
+import torch
 import open_clip
+from torchvision import transforms
 
 IMAGE_FOLDER = "training"
 EMBEDDING_FILE = "embeddings/vectors.npy"
@@ -20,61 +22,26 @@ def get_image_embedding(model, preprocess, image_path):
         emb = model.encode_image(image).squeeze(0)
     return emb / emb.norm()
 
-def extract_middle_frame(video_path, output_path):
-    cap = cv2.VideoCapture(video_path)
-    if not cap.isOpened():
-        print(f"❌ Failed to open video: {video_path}")
-        return False
-
-    total_frames = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
-    mid_frame_idx = total_frames // 2
-    cap.set(cv2.CAP_PROP_POS_FRAMES, mid_frame_idx)
-    success, frame = cap.read()
-    if success:
-        cv2.imwrite(output_path, frame)
-    cap.release()
-    return success
-
-def vectorize_all_media():
+def vectorize_images():
     model, preprocess = load_model()
     embeddings = []
     paths = []
 
-    # Vectorize images
     for fname in os.listdir(IMAGE_FOLDER):
         if fname.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
             path = os.path.join(IMAGE_FOLDER, fname)
-            print(f"🖼️ Vectorizing image: {path}")
+            print(f"Vectorizing: {path}")
             emb = get_image_embedding(model, preprocess, path)
             embeddings.append(emb.numpy())
             paths.append(path)
 
-    # Extract and vectorize video thumbnails
-    for fname in os.listdir(IMAGE_FOLDER):
-        if fname.lower().endswith(('.mp4', '.mov', '.webm')):
-            video_path = os.path.join(IMAGE_FOLDER, fname)
-            base_name = os.path.splitext(fname)[0]
-            frame_filename = f"video_{base_name}.jpg"
-            frame_path = os.path.join(IMAGE_FOLDER, frame_filename)
-
-            if os.path.exists(frame_path):
-                continue
-
-            print(f"🎥 Extracting middle frame from: {video_path}")
-            if extract_middle_frame(video_path, frame_path):
-                emb = get_image_embedding(model, preprocess, frame_path)
-                embeddings.append(emb.numpy())
-                paths.append(frame_path)
-
-    # Save to disk
     os.makedirs("embeddings", exist_ok=True)
     np.save(EMBEDDING_FILE, np.stack(embeddings))
-
     with open(PATHS_FILE, "w") as f:
         for p in paths:
             f.write(p + "\n")
 
-    print(f"✅ Vectorized {len(embeddings)} files")
+    print("✅ Embeddings saved!")
 
 if __name__ == "__main__":
-    vectorize_all_media()
+    vectorize_images()

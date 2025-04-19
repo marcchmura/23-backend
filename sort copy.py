@@ -7,7 +7,7 @@ import torch
 import open_clip
 from torchvision import transforms
 
-IMAGE_FOLDER = "downloaded_images"
+IMAGE_FOLDER = "training"
 EMBEDDING_FILE = "embeddings/vectors.npy"
 PATHS_FILE = "embeddings/paths.txt"
 

@@ -3,6 +3,7 @@ training/e9cd1aa7-5fd5-4635-a782-2d3c52100b14.webp.webp
 training/fa10de98-84ae-499c-8511-48ba911997cd.webp.webp
 training/b715c287-810f-46b6-84f6-42a0a0f8090d.webp.webp
 training/e203e476-ad86-4f0a-9f1f-42cdb68bff0e.webp.webp
+training/video_compressed_watermark_51011_kirapregiato_34038200592.jpg
 training/d96cc284-ecd7-4e46-aeb9-5fc4d0724ee3.webp.webp
 training/210b4fcd-d700-49cf-be48-a53784e5ee60.webp.webp
 training/47e4e12f-b9a4-4892-9071-5054a9e6913a.webp.webp
@@ -14,4 +15,3 @@ training/compressed_watermark_51011_kirapregiato_34038200592.jpg
 training/856ed6df-1ea3-4db2-9a7e-9796eb2d3575.webp.webp
 training/8bf111dd-d0ed-4684-b2f5-adf17e98d761.webp.webp
 training/2b931b61-aa02-469b-b834-05449d638abf.webp.webp
-training/video_compressed_watermark_51011_kirapregiato_34038200592.jpg
