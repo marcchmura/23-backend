@@ -6,10 +6,8 @@ from PIL import Image
 import open_clip
 
 IMAGE_FOLDER = "training"
-VIDEO_FOLDER = "training"
-FRAME_FOLDER = "video_frames"
 EMBEDDING_FILE = "embeddings/vectors.npy"
-PATHS_FILE = "embeddings/paths.txt"  # ✅ back to plain .txt
+PATHS_FILE = "embeddings/paths.txt"  # plain text paths only
 
 def load_model():
     model, _, preprocess = open_clip.create_model_and_transforms('ViT-B-32', pretrained='laion2b_s34b_b79k')
@@ -33,7 +31,6 @@ def extract_middle_frame(video_path, output_path):
     cap.set(cv2.CAP_PROP_POS_FRAMES, mid_frame_idx)
     success, frame = cap.read()
     if success:
-        os.makedirs(os.path.dirname(output_path), exist_ok=True)
         cv2.imwrite(output_path, frame)
     cap.release()
     return success
@@ -43,7 +40,7 @@ def vectorize_all_media():
     embeddings = []
     paths = []
 
-    # Vectorize images
+    # Step 1: Vectorize existing image files in folder
     for fname in os.listdir(IMAGE_FOLDER):
         if fname.lower().endswith(('.jpg', '.jpeg', '.png', '.webp')):
             path = os.path.join(IMAGE_FOLDER, fname)
@@ -52,18 +49,23 @@ def vectorize_all_media():
             embeddings.append(emb.numpy())
             paths.append(path)
 
-    # Vectorize videos via frame
-    for fname in os.listdir(VIDEO_FOLDER):
+    # Step 2: Extract middle frame from each video and treat as image
+    for fname in os.listdir(IMAGE_FOLDER):
         if fname.lower().endswith(('.mp4', '.mov', '.webm')):
-            video_path = os.path.join(VIDEO_FOLDER, fname)
-            frame_path = os.path.join(FRAME_FOLDER, f"{os.path.splitext(fname)[0]}.jpg")
+            video_path = os.path.join(IMAGE_FOLDER, fname)
+            frame_filename = os.path.splitext(fname)[0] + ".jpg"
+            frame_path = os.path.join(IMAGE_FOLDER, frame_filename)
 
-            print(f"🎥 Extracting middle frame: {video_path}")
+            if os.path.exists(frame_path):  # skip if already exists
+                continue
+
+            print(f"🎥 Extracting frame from: {video_path}")
             if extract_middle_frame(video_path, frame_path):
                 emb = get_image_embedding(model, preprocess, frame_path)
                 embeddings.append(emb.numpy())
-                paths.append(frame_path)  # ✅ add the frame only
+                paths.append(frame_path)
 
+    # Save all to disk
     os.makedirs("embeddings", exist_ok=True)
     np.save(EMBEDDING_FILE, np.stack(embeddings))
 
@@ -71,7 +73,7 @@ def vectorize_all_media():
         for p in paths:
             f.write(p + "\n")
 
-    print(f"✅ Saved {len(embeddings)} embeddings to vectors.npy and paths.txt")
+    print(f"✅ Vectorized {len(embeddings)} files (images + video frames)")
 
 if __name__ == "__main__":
     vectorize_all_media()

@@ -14,4 +14,3 @@ training/compressed_watermark_51011_kirapregiato_34038200592.jpg
 training/856ed6df-1ea3-4db2-9a7e-9796eb2d3575.webp.webp
 training/8bf111dd-d0ed-4684-b2f5-adf17e98d761.webp.webp
 training/2b931b61-aa02-469b-b834-05449d638abf.webp.webp
-video_frames/compressed_watermark_51011_kirapregiato_34038200592.jpg
