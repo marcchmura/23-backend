@@ -7,7 +7,7 @@ R2_ACCESS_KEY = 'f9dc489256184a5b86a7c4552d845e4a'
 R2_SECRET_KEY = '97bab7537687d7984b9c080b649356932aa55190b2adcd5a28951ea1e8c88e53'
 R2_ENDPOINT = 'https://eb485412a282a7a1f97b760fa3f00107.r2.cloudflarestorage.com'
 R2_BUCKET_NAME = 'images'
-LOCAL_FOLDER_PATH = './downloaded_images'
+LOCAL_FOLDER_PATH = './training'
 R2_FOLDER_PREFIX = ''  # Optional: e.g., 'my-images/'
 
 # === SETUP CLIENT ===
