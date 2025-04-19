@@ -10,3 +10,10 @@ downloaded_images_save/
 .downloaded_images_save/
 videos/
 .videos/
+# Ignore all video files
+*.mp4
+*.mov
+*.avi
+
+# Ignore a whole folder
+videos/
